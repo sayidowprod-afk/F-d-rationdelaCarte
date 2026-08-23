@@ -28,9 +28,10 @@ export default function AdhesionForm() {
 
   return (
     <form action={formAction} className="space-y-5">
+      <Field label="Pseudo *" name="pseudo" required />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Prénom *" name="first_name" required />
-        <Field label="Nom *" name="last_name" required />
+        <Field label="Prénom" name="first_name" />
+        <Field label="Nom" name="last_name" />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Email *" name="email" type="email" required />
@@ -60,7 +61,7 @@ export default function AdhesionForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-full bg-foreground px-6 py-2.5 text-sm font-medium text-background hover:opacity-90 disabled:opacity-50"
+        className="w-full rounded-full bg-brand-red px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
       >
         {pending ? "Envoi en cours..." : "Envoyer ma demande d'adhésion"}
       </button>

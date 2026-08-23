@@ -27,7 +27,7 @@ export default async function Home() {
         <div className="mt-8 flex justify-center gap-4">
           <Link
             href="/adhesion"
-            className="rounded-full bg-foreground px-6 py-2.5 text-sm font-medium text-background hover:opacity-90"
+            className="rounded-full bg-brand-red px-6 py-2.5 text-sm font-medium text-white hover:opacity-90"
           >
             Devenir membre
           </Link>

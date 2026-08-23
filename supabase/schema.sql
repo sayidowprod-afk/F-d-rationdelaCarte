@@ -6,8 +6,9 @@ create type membership_status as enum ('pending', 'active', 'expired');
 create table public.members (
   id uuid primary key references auth.users(id) on delete cascade,
   membership_number serial unique,
-  first_name text not null,
-  last_name text not null,
+  pseudo text not null unique,
+  first_name text,
+  last_name text,
   email text not null,
   phone text,
   city text,

@@ -25,7 +25,7 @@ export default async function MembresPage() {
     <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-12">
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">
-          Bonjour {member?.first_name || ""}
+          Bonjour {member?.first_name || member?.pseudo || ""}
         </h1>
         <form action={signOut}>
           <button className="text-sm text-zinc-500 hover:underline">

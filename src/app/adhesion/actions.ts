@@ -13,12 +13,13 @@ export async function submitAdhesion(
 ): Promise<AdhesionState> {
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
+  const pseudo = String(formData.get("pseudo") || "").trim();
   const firstName = String(formData.get("first_name") || "").trim();
   const lastName = String(formData.get("last_name") || "").trim();
   const phone = String(formData.get("phone") || "").trim();
   const bio = String(formData.get("bio") || "").trim();
 
-  if (!email || !password || !firstName || !lastName) {
+  if (!email || !password || !pseudo) {
     return { error: "Merci de remplir tous les champs obligatoires." };
   }
   if (password.length < 8) {
@@ -43,8 +44,9 @@ export async function submitAdhesion(
 
   const { error: insertError } = await supabase.from("members").insert({
     id: signUpData.user.id,
-    first_name: firstName,
-    last_name: lastName,
+    pseudo,
+    first_name: firstName || null,
+    last_name: lastName || null,
     email,
     phone: phone || null,
     bio: bio || null,
@@ -52,7 +54,11 @@ export async function submitAdhesion(
   });
 
   if (insertError) {
-    return { error: "Compte créé mais erreur lors de l'enregistrement du profil : " + insertError.message };
+    return {
+      error: insertError.code === "23505"
+        ? "Ce pseudo est déjà pris, merci d'en choisir un autre."
+        : "Compte créé mais erreur lors de l'enregistrement du profil : " + insertError.message,
+    };
   }
 
   return { success: true };

@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_ASSOCIATION_NAME || "Association de collectionneurs",
   description: "Site des membres de l'association",
+  icons: {
+    icon: "/brand/icon.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

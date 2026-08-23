@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import type { Member, NewsItem } from "@/lib/types";
+import { memberDisplayName, type Member, type NewsItem } from "@/lib/types";
 import { setMemberStatus, deleteNews } from "./actions";
 import NewsForm from "./NewsForm";
 
@@ -50,7 +50,7 @@ export default async function AdminPage() {
             >
               <div>
                 <p className="font-medium">
-                  {m.first_name} {m.last_name}{" "}
+                  {memberDisplayName(m)}{" "}
                   <span className="text-xs text-zinc-500">({m.email})</span>
                 </p>
                 <p className="text-xs text-zinc-500">{statusLabel[m.status]}</p>

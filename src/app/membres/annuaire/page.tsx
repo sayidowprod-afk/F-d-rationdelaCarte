@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import type { Member } from "@/lib/types";
+import { memberDisplayName, type Member } from "@/lib/types";
 
 export default async function AnnuairePage() {
   const supabase = await createClient();
@@ -7,7 +7,7 @@ export default async function AnnuairePage() {
     .from("members")
     .select("*")
     .eq("status", "active")
-    .order("last_name", { ascending: true });
+    .order("pseudo", { ascending: true });
 
   return (
     <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-12">
@@ -23,16 +23,11 @@ export default async function AnnuairePage() {
             >
               <div>
                 <p className="font-medium">
-                  {m.first_name} {m.last_name}
+                  {memberDisplayName(m)}
                   <span className="ml-2 text-xs text-zinc-500">
                     #{m.membership_number}
                   </span>
                 </p>
-                {m.memorabilius_pseudo && (
-                  <p className="text-sm text-zinc-500">
-                    Memorabilius : {m.memorabilius_pseudo}
-                  </p>
-                )}
                 {m.bio && (
                   <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                     {m.bio}

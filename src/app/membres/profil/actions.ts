@@ -21,11 +21,17 @@ export async function updateProfil(
     return { error: "Non connecté." };
   }
 
+  const pseudo = String(formData.get("pseudo") || "").trim();
+  if (!pseudo) {
+    return { error: "Le pseudo est obligatoire." };
+  }
+
   const { error } = await supabase
     .from("members")
     .update({
-      first_name: String(formData.get("first_name") || "").trim(),
-      last_name: String(formData.get("last_name") || "").trim(),
+      pseudo,
+      first_name: String(formData.get("first_name") || "").trim() || null,
+      last_name: String(formData.get("last_name") || "").trim() || null,
       phone: String(formData.get("phone") || "").trim() || null,
       city: String(formData.get("city") || "").trim() || null,
       birth_date: String(formData.get("birth_date") || "").trim() || null,
@@ -38,7 +44,12 @@ export async function updateProfil(
     .eq("id", user.id);
 
   if (error) {
-    return { error: error.message };
+    return {
+      error:
+        error.code === "23505"
+          ? "Ce pseudo est déjà pris, merci d'en choisir un autre."
+          : error.message,
+    };
   }
 
   revalidatePath("/membres");

@@ -1,5 +1,6 @@
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
-import type { Member } from "@/lib/types";
+import { memberDisplayName, type Member } from "@/lib/types";
 import PrintButton from "./PrintButton";
 
 export default async function CartePage() {
@@ -37,17 +38,20 @@ export default async function CartePage() {
         Ma carte de membre
       </h1>
 
-      <div className="mx-auto aspect-[1.586/1] w-full max-w-sm rounded-2xl border border-black/10 bg-gradient-to-br from-zinc-900 to-zinc-700 p-6 text-white shadow-lg dark:border-white/10">
-        <p className="text-xs uppercase tracking-wider text-zinc-300">
-          {associationName}
-        </p>
+      <div className="mx-auto aspect-[1.586/1] w-full max-w-sm rounded-2xl bg-gradient-to-br from-brand-blue to-[#12295c] p-6 text-white shadow-lg">
+        <div className="flex items-center gap-2">
+          <Image src="/brand/icon.png" alt="" width={28} height={28} className="h-7 w-7" />
+          <p className="text-xs uppercase tracking-wider text-white/70">
+            {associationName}
+          </p>
+        </div>
         <p className="mt-6 text-lg font-semibold">
-          {member.first_name} {member.last_name}
+          {memberDisplayName(member)}
         </p>
-        <p className="text-sm text-zinc-300">
+        <p className="text-sm text-brand-red">
           Membre n° {member.membership_number}
         </p>
-        <p className="mt-4 text-xs text-zinc-400">
+        <p className="mt-4 text-xs text-white/60">
           Adhérent·e depuis le{" "}
           {new Date(member.joined_at).toLocaleDateString("fr-FR")}
         </p>

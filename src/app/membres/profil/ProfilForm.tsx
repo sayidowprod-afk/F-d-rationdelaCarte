@@ -11,9 +11,10 @@ export default function ProfilForm({ member }: { member: Member }) {
 
   return (
     <form action={formAction} className="space-y-5">
+      <Field label="Pseudo" name="pseudo" defaultValue={member.pseudo} required />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Prénom" name="first_name" defaultValue={member.first_name} required />
-        <Field label="Nom" name="last_name" defaultValue={member.last_name} required />
+        <Field label="Prénom" name="first_name" defaultValue={member.first_name ?? ""} />
+        <Field label="Nom" name="last_name" defaultValue={member.last_name ?? ""} />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Téléphone" name="phone" type="tel" defaultValue={member.phone ?? ""} />
@@ -61,7 +62,7 @@ export default function ProfilForm({ member }: { member: Member }) {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-full bg-foreground px-6 py-2.5 text-sm font-medium text-background hover:opacity-90 disabled:opacity-50"
+        className="rounded-full bg-brand-red px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
       >
         {pending ? "Enregistrement..." : "Enregistrer"}
       </button>

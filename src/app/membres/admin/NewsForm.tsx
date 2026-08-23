@@ -34,7 +34,7 @@ export default function NewsForm() {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background hover:opacity-90 disabled:opacity-50"
+        className="rounded-full bg-brand-red px-5 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
       >
         {pending ? "Publication..." : "Publier"}
       </button>
