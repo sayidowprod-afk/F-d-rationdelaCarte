@@ -47,27 +47,32 @@ create policy "members_update_self" on public.members
 create policy "members_insert_self" on public.members
   for insert with check (auth.uid() = id);
 
+-- Vérifie si l'utilisateur connecté est admin, en contournant RLS (security
+-- definer) pour éviter la récursion infinie que provoquerait une sous-requête
+-- directe sur members dans les règles ci-dessous.
+create or replace function public.is_admin()
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select coalesce((select is_admin from public.members where id = auth.uid()), false);
+$$;
+
 -- Les admins peuvent tout voir/modifier
 create policy "members_admin_all" on public.members
-  for all using (
-    exists (select 1 from public.members m where m.id = auth.uid() and m.is_admin = true)
-  );
+  for all using (public.is_admin());
 
 -- Actus : lecture publique, écriture réservée aux admins
 create policy "news_select_all" on public.news
   for select using (true);
 
 create policy "news_admin_write" on public.news
-  for insert with check (
-    exists (select 1 from public.members m where m.id = auth.uid() and m.is_admin = true)
-  );
+  for insert with check (public.is_admin());
 
 create policy "news_admin_update" on public.news
-  for update using (
-    exists (select 1 from public.members m where m.id = auth.uid() and m.is_admin = true)
-  );
+  for update using (public.is_admin());
 
 create policy "news_admin_delete" on public.news
-  for delete using (
-    exists (select 1 from public.members m where m.id = auth.uid() and m.is_admin = true)
-  );
+  for delete using (public.is_admin());
