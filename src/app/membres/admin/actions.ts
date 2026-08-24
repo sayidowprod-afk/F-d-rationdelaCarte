@@ -17,9 +17,23 @@ export async function setMembershipExpiry(memberId: string, expiresAt: string | 
 
 export async function renewMembershipOneYear(memberId: string, currentExpiresAt: string | null) {
   const base = currentExpiresAt && currentExpiresAt > todayIso() ? currentExpiresAt : todayIso();
-  const next = new Date(base);
-  next.setFullYear(next.getFullYear() + 1);
-  await setMembershipExpiry(memberId, next.toISOString().slice(0, 10));
+  await setMembershipExpiry(memberId, addOneYear(base));
+}
+
+// L'admin saisit la date à laquelle l'adhérent a réglé sa cotisation ;
+// l'expiration (+1 an) est calculée automatiquement.
+export async function setMembershipStart(memberId: string, startDate: string) {
+  if (!startDate) {
+    await setMembershipExpiry(memberId, null);
+    return;
+  }
+  await setMembershipExpiry(memberId, addOneYear(startDate));
+}
+
+function addOneYear(dateStr: string) {
+  const d = new Date(dateStr);
+  d.setFullYear(d.getFullYear() + 1);
+  return d.toISOString().slice(0, 10);
 }
 
 export type NewsState = {

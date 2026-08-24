@@ -1,8 +1,15 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { isMembershipActive, memberDisplayName, type Member, type NewsItem } from "@/lib/types";
-import { setMembershipExpiry, renewMembershipOneYear, deleteNews } from "./actions";
+import { setMembershipStart, renewMembershipOneYear, deleteNews } from "./actions";
 import NewsForm from "./NewsForm";
+
+function membershipStartDate(expiresAt: string | null) {
+  if (!expiresAt) return "";
+  const d = new Date(expiresAt);
+  d.setFullYear(d.getFullYear() - 1);
+  return d.toISOString().slice(0, 10);
+}
 
 export default async function AdminPage() {
   const supabase = await createClient();
@@ -64,18 +71,22 @@ export default async function AdminPage() {
                     : "Pas encore adhérent·e"}
                 </span>
               </div>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-col gap-2 sm:items-end">
                 <form
                   action={async (fd: FormData) => {
                     "use server";
-                    await setMembershipExpiry(m.id, String(fd.get("expires_at") || ""));
+                    await setMembershipStart(m.id, String(fd.get("start_date") || ""));
                   }}
                   className="flex items-center gap-2"
                 >
+                  <label className="text-xs text-zinc-500" htmlFor={`start-${m.id}`}>
+                    Début d&apos;adhésion
+                  </label>
                   <input
+                    id={`start-${m.id}`}
                     type="date"
-                    name="expires_at"
-                    defaultValue={m.membership_expires_at ?? ""}
+                    name="start_date"
+                    defaultValue={membershipStartDate(m.membership_expires_at)}
                     className="field-input py-1 text-xs"
                   />
                   <button className="btn-secondary px-3 py-1 text-xs">Enregistrer</button>
@@ -86,7 +97,9 @@ export default async function AdminPage() {
                     await renewMembershipOneYear(m.id, m.membership_expires_at);
                   }}
                 >
-                  <button className="btn-primary px-3 py-1 text-xs">Renouveler +1 an</button>
+                  <button className="btn-primary px-3 py-1 text-xs">
+                    Renouveler 1 an à partir d&apos;aujourd&apos;hui
+                  </button>
                 </form>
               </div>
             </li>
