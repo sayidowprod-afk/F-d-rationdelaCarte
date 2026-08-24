@@ -26,6 +26,16 @@ export default function ProfilForm({ member }: { member: Member }) {
         />
         <FormField label="Ville" name="city" defaultValue={member.city ?? ""} />
       </div>
+      <label className="flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          name="show_on_map"
+          defaultChecked={member.show_on_map}
+          className="h-4 w-4 accent-brand-red"
+        />
+        M&apos;afficher sur la carte des membres (ville uniquement, visible
+        par les autres membres)
+      </label>
       <FormField
         label="Date de naissance"
         name="birth_date"

@@ -13,6 +13,9 @@ export type Member = {
   memorabilius_pseudo: string | null;
   memorabilius_url: string | null;
   membership_expires_at: string | null;
+  show_on_map: boolean;
+  latitude: number | null;
+  longitude: number | null;
   is_admin: boolean;
   joined_at: string;
   created_at: string;

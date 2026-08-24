@@ -15,6 +15,11 @@ create table public.members (
   avatar_url text,
   memorabilius_pseudo text,
   memorabilius_url text,
+  -- Opt-in pour apparaître sur la carte des membres (ville uniquement,
+  -- géocodée via l'API officielle geo.api.gouv.fr).
+  show_on_map boolean not null default false,
+  latitude double precision,
+  longitude double precision,
   -- null tant que la personne n'a pas payé sa première cotisation ; une fois
   -- réglée, l'admin fixe cette date (ex: +1 an). L'adhésion est active tant
   -- que membership_expires_at >= aujourd'hui.
@@ -46,6 +51,12 @@ create policy "members_select_active" on public.members
 -- Un membre peut modifier son propre profil (pas son statut ni is_admin, appliqué côté appli)
 create policy "members_update_self" on public.members
   for update using (auth.uid() = id);
+
+-- Filet de sécurité : permet au site de créer sa propre ligne si le
+-- déclencheur ci-dessous n'a pas pu le faire (ex: compte créé avant sa mise
+-- en place).
+create policy "members_insert_self" on public.members
+  for insert with check (auth.uid() = id);
 
 -- Création du profil à l'inscription : avec la confirmation d'email activée,
 -- l'utilisateur n'a pas encore de session juste après signUp(), donc le site

@@ -59,8 +59,13 @@ export default async function MembresPage() {
           </div>
         )}
 
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2">
           <Card href="/membres/annuaire" title="Annuaire" desc="Voir les membres" />
+          <Card
+            href="/membres/carte-membres"
+            title="Carte des membres"
+            desc="Localisation par ville"
+          />
           <Card href="/membres/carte" title="Ma carte" desc="Carte de membre" />
           <Card href="/membres/profil" title="Mon profil" desc="Modifier mes infos" />
         </div>

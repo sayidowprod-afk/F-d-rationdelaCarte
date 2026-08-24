@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { geocodeFrenchCity } from "@/lib/geocode";
 
 export type ProfilState = {
   error?: string;
@@ -26,6 +27,17 @@ export async function updateProfil(
     return { error: "Le pseudo est obligatoire." };
   }
 
+  const city = String(formData.get("city") || "").trim() || null;
+  const showOnMap = formData.get("show_on_map") === "on";
+
+  let latitude: number | null = null;
+  let longitude: number | null = null;
+  if (showOnMap && city) {
+    const geo = await geocodeFrenchCity(city);
+    latitude = geo?.latitude ?? null;
+    longitude = geo?.longitude ?? null;
+  }
+
   const { error } = await supabase
     .from("members")
     .update({
@@ -33,13 +45,16 @@ export async function updateProfil(
       first_name: String(formData.get("first_name") || "").trim() || null,
       last_name: String(formData.get("last_name") || "").trim() || null,
       phone: String(formData.get("phone") || "").trim() || null,
-      city: String(formData.get("city") || "").trim() || null,
+      city,
       birth_date: String(formData.get("birth_date") || "").trim() || null,
       bio: String(formData.get("bio") || "").trim() || null,
       memorabilius_pseudo:
         String(formData.get("memorabilius_pseudo") || "").trim() || null,
       memorabilius_url:
         String(formData.get("memorabilius_url") || "").trim() || null,
+      show_on_map: showOnMap,
+      latitude,
+      longitude,
     })
     .eq("id", user.id);
 
@@ -54,5 +69,6 @@ export async function updateProfil(
 
   revalidatePath("/membres");
   revalidatePath("/membres/annuaire");
+  revalidatePath("/membres/carte-membres");
   return { success: true };
 }
