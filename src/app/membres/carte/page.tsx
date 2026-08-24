@@ -48,9 +48,6 @@ export default async function CartePage() {
         <p className="mt-6 text-lg font-semibold">
           {memberDisplayName(member)}
         </p>
-        <p className="text-sm text-brand-red">
-          Membre n° {member.membership_number}
-        </p>
         <p className="mt-4 text-xs text-white/60">
           Valide jusqu&apos;au{" "}
           {new Date(member.membership_expires_at!).toLocaleDateString("fr-FR")}
