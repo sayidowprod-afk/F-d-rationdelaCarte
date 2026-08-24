@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { FormField, FormTextArea } from "@/components/FormField";
 import type { Member } from "@/lib/types";
 import { updateProfil, type ProfilState } from "./actions";
 
@@ -11,28 +12,33 @@ export default function ProfilForm({ member }: { member: Member }) {
 
   return (
     <form action={formAction} className="space-y-5">
-      <Field label="Pseudo" name="pseudo" defaultValue={member.pseudo} required />
+      <FormField label="Pseudo" name="pseudo" defaultValue={member.pseudo} required />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Prénom" name="first_name" defaultValue={member.first_name ?? ""} />
-        <Field label="Nom" name="last_name" defaultValue={member.last_name ?? ""} />
+        <FormField label="Prénom" name="first_name" defaultValue={member.first_name ?? ""} />
+        <FormField label="Nom" name="last_name" defaultValue={member.last_name ?? ""} />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Téléphone" name="phone" type="tel" defaultValue={member.phone ?? ""} />
-        <Field label="Ville" name="city" defaultValue={member.city ?? ""} />
+        <FormField
+          label="Téléphone"
+          name="phone"
+          type="tel"
+          defaultValue={member.phone ?? ""}
+        />
+        <FormField label="Ville" name="city" defaultValue={member.city ?? ""} />
       </div>
-      <Field
+      <FormField
         label="Date de naissance"
         name="birth_date"
         type="date"
         defaultValue={member.birth_date ?? ""}
       />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field
+        <FormField
           label="Pseudo Memorabilius"
           name="memorabilius_pseudo"
           defaultValue={member.memorabilius_pseudo ?? ""}
         />
-        <Field
+        <FormField
           label="Lien galerie Memorabilius"
           name="memorabilius_url"
           type="url"
@@ -40,15 +46,7 @@ export default function ProfilForm({ member }: { member: Member }) {
           placeholder="https://www.memorabilius.fr/galerie/..."
         />
       </div>
-      <div>
-        <label className="mb-1 block text-sm font-medium">Présentation</label>
-        <textarea
-          name="bio"
-          rows={3}
-          defaultValue={member.bio ?? ""}
-          className="w-full rounded-md border border-black/10 bg-transparent px-3 py-2 text-sm outline-none focus:border-black/30 dark:border-white/15 dark:focus:border-white/30"
-        />
-      </div>
+      <FormTextArea label="Présentation" name="bio" defaultValue={member.bio ?? ""} />
 
       {state.error && (
         <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>
@@ -59,46 +57,9 @@ export default function ProfilForm({ member }: { member: Member }) {
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-full bg-brand-red px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
-      >
+      <button type="submit" disabled={pending} className="btn-primary">
         {pending ? "Enregistrement..." : "Enregistrer"}
       </button>
     </form>
-  );
-}
-
-function Field({
-  label,
-  name,
-  type = "text",
-  required,
-  placeholder,
-  defaultValue,
-}: {
-  label: string;
-  name: string;
-  type?: string;
-  required?: boolean;
-  placeholder?: string;
-  defaultValue?: string;
-}) {
-  return (
-    <div>
-      <label className="mb-1 block text-sm font-medium" htmlFor={name}>
-        {label}
-      </label>
-      <input
-        id={name}
-        name={name}
-        type={type}
-        required={required}
-        placeholder={placeholder}
-        defaultValue={defaultValue}
-        className="w-full rounded-md border border-black/10 bg-transparent px-3 py-2 text-sm outline-none focus:border-black/30 dark:border-white/15 dark:focus:border-white/30"
-      />
-    </div>
   );
 }

@@ -1,3 +1,4 @@
+import AuthLayout from "@/components/AuthLayout";
 import ConnexionForm from "./ConnexionForm";
 
 export default async function ConnexionPage(props: PageProps<"/connexion">) {
@@ -5,15 +6,14 @@ export default async function ConnexionPage(props: PageProps<"/connexion">) {
   const next = typeof searchParams.next === "string" ? searchParams.next : "/membres";
 
   return (
-    <main className="mx-auto w-full max-w-sm flex-1 px-4 py-16">
-      <h1 className="mb-8 text-2xl font-semibold tracking-tight">Connexion</h1>
+    <AuthLayout title="Connexion" subtitle="Accédez à votre espace membre.">
       <ConnexionForm next={next} />
       <p className="mt-6 text-center text-sm text-zinc-500">
-        Pas encore membre ?{" "}
+        Pas encore de compte ?{" "}
         <a href="/adhesion" className="underline">
-          Demander l&apos;adhésion
+          Créez-en un
         </a>
       </p>
-    </main>
+    </AuthLayout>
   );
 }

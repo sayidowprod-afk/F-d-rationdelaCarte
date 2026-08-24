@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import MobileNav from "./MobileNav";
 
 export default async function SiteHeader() {
   const supabase = await createClient();
@@ -12,7 +13,7 @@ export default async function SiteHeader() {
     process.env.NEXT_PUBLIC_ASSOCIATION_NAME || "Association de collectionneurs";
 
   return (
-    <header className="bg-brand-blue text-white">
+    <header className="relative z-30 bg-brand-blue text-white shadow-md">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-3 font-semibold tracking-tight">
           <Image
@@ -25,33 +26,42 @@ export default async function SiteHeader() {
           />
           <span>{associationName}</span>
         </Link>
-        <nav className="flex items-center gap-6 text-sm">
-          <Link href="/actus" className="text-white/85 hover:text-white">
+
+        <nav className="hidden items-center gap-6 text-sm sm:flex">
+          <Link href="/actus" className="text-white/85 transition-colors hover:text-white">
             Actus
           </Link>
           {user ? (
             <>
-              <Link href="/membres" className="text-white/85 hover:text-white">
+              <Link
+                href="/membres"
+                className="text-white/85 transition-colors hover:text-white"
+              >
                 Espace membre
               </Link>
-              <Link href="/membres/annuaire" className="text-white/85 hover:text-white">
+              <Link
+                href="/membres/annuaire"
+                className="text-white/85 transition-colors hover:text-white"
+              >
                 Annuaire
               </Link>
             </>
           ) : (
             <>
-              <Link href="/adhesion" className="text-white/85 hover:text-white">
+              <Link
+                href="/adhesion"
+                className="text-white/85 transition-colors hover:text-white"
+              >
                 Créer un compte
               </Link>
-              <Link
-                href="/connexion"
-                className="rounded-full bg-brand-red px-4 py-1.5 font-medium text-white hover:opacity-90"
-              >
+              <Link href="/connexion" className="btn-primary">
                 Connexion
               </Link>
             </>
           )}
         </nav>
+
+        <MobileNav isLoggedIn={!!user} />
       </div>
     </header>
   );

@@ -16,10 +16,7 @@ export default async function ActusPage() {
       {news && news.length > 0 ? (
         <ul className="space-y-6">
           {(news as NewsItem[]).map((item) => (
-            <li
-              key={item.id}
-              className="rounded-lg border border-black/10 p-5 dark:border-white/10"
-            >
+            <li key={item.id} className="card">
               <p className="text-xs text-zinc-500">
                 {new Date(item.event_date || item.created_at).toLocaleDateString(
                   "fr-FR",
@@ -34,9 +31,9 @@ export default async function ActusPage() {
           ))}
         </ul>
       ) : (
-        <p className="text-sm text-zinc-500">
+        <div className="card text-center text-sm text-zinc-500">
           Aucune actualité publiée pour le moment.
-        </p>
+        </div>
       )}
     </main>
   );

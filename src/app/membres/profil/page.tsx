@@ -19,7 +19,9 @@ export default async function ProfilPage() {
   return (
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-12">
       <h1 className="mb-8 text-2xl font-semibold tracking-tight">Mon profil</h1>
-      <ProfilForm member={member} />
+      <div className="card">
+        <ProfilForm member={member} />
+      </div>
     </main>
   );
 }

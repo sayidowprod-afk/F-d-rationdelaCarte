@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { FormField, FormTextArea } from "@/components/FormField";
 import { submitAdhesion, type AdhesionState } from "./actions";
 
 const initialState: AdhesionState = {};
@@ -29,26 +30,17 @@ export default function AdhesionForm() {
 
   return (
     <form action={formAction} className="space-y-5">
-      <Field label="Pseudo *" name="pseudo" required />
+      <FormField label="Pseudo *" name="pseudo" required />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Prénom" name="first_name" />
-        <Field label="Nom" name="last_name" />
+        <FormField label="Prénom" name="first_name" />
+        <FormField label="Nom" name="last_name" />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Email *" name="email" type="email" required />
-        <Field label="Téléphone" name="phone" type="tel" />
+        <FormField label="Email *" name="email" type="email" required />
+        <FormField label="Téléphone" name="phone" type="tel" />
       </div>
-      <div>
-        <label className="mb-1 block text-sm font-medium">
-          Présentez-vous (thèmes de collection, etc.)
-        </label>
-        <textarea
-          name="bio"
-          rows={3}
-          className="w-full rounded-md border border-black/10 bg-transparent px-3 py-2 text-sm outline-none focus:border-black/30 dark:border-white/15 dark:focus:border-white/30"
-        />
-      </div>
-      <Field
+      <FormTextArea label="Présentez-vous (thèmes de collection, etc.)" name="bio" />
+      <FormField
         label="Mot de passe (8 caractères min.) *"
         name="password"
         type="password"
@@ -59,43 +51,9 @@ export default function AdhesionForm() {
         <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>
       )}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="w-full rounded-full bg-brand-red px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
-      >
+      <button type="submit" disabled={pending} className="btn-primary w-full">
         {pending ? "Création en cours..." : "Créer mon compte"}
       </button>
     </form>
-  );
-}
-
-function Field({
-  label,
-  name,
-  type = "text",
-  required,
-  placeholder,
-}: {
-  label: string;
-  name: string;
-  type?: string;
-  required?: boolean;
-  placeholder?: string;
-}) {
-  return (
-    <div>
-      <label className="mb-1 block text-sm font-medium" htmlFor={name}>
-        {label}
-      </label>
-      <input
-        id={name}
-        name={name}
-        type={type}
-        required={required}
-        placeholder={placeholder}
-        className="w-full rounded-md border border-black/10 bg-transparent px-3 py-2 text-sm outline-none focus:border-black/30 dark:border-white/15 dark:focus:border-white/30"
-      />
-    </div>
   );
 }

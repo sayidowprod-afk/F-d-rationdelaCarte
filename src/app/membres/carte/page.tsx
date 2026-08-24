@@ -24,10 +24,10 @@ export default async function CartePage() {
         <h1 className="mb-4 text-2xl font-semibold tracking-tight">
           Ma carte de membre
         </h1>
-        <p className="text-sm text-zinc-500">
+        <div className="card text-sm text-zinc-500">
           Votre carte sera disponible dès que votre adhésion sera validée par
           le bureau.
-        </p>
+        </div>
       </main>
     );
   }

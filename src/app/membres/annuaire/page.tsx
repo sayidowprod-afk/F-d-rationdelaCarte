@@ -19,7 +19,7 @@ export default async function AnnuairePage() {
           {(members as Member[]).map((m) => (
             <li
               key={m.id}
-              className="flex items-center justify-between rounded-lg border border-black/10 p-4 dark:border-white/10"
+              className="card card-hover flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
             >
               <div>
                 <p className="font-medium">
@@ -28,6 +28,7 @@ export default async function AnnuairePage() {
                     #{m.membership_number}
                   </span>
                 </p>
+                {m.city && <p className="text-sm text-zinc-500">{m.city}</p>}
                 {m.bio && (
                   <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                     {m.bio}
@@ -39,7 +40,7 @@ export default async function AnnuairePage() {
                   href={m.memorabilius_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="shrink-0 rounded-full border border-black/10 px-4 py-1.5 text-sm hover:bg-black/[.03] dark:border-white/15 dark:hover:bg-white/[.06]"
+                  className="btn-secondary shrink-0"
                 >
                   Voir la galerie
                 </a>
@@ -48,7 +49,9 @@ export default async function AnnuairePage() {
           ))}
         </ul>
       ) : (
-        <p className="text-sm text-zinc-500">Aucun membre actif pour l&apos;instant.</p>
+        <div className="card text-center text-sm text-zinc-500">
+          Aucun membre actif pour l&apos;instant.
+        </div>
       )}
     </main>
   );
