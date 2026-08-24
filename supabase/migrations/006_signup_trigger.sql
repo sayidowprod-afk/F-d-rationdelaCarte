@@ -31,6 +31,7 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_member();
 
--- L'insertion se fait désormais via le déclencheur ci-dessus, plus besoin
--- que le site l'insère lui-même après signUp().
-drop policy if exists "members_insert_self" on public.members;
+-- Remarque : l'insertion normale se fait désormais via ce déclencheur.
+-- La politique members_insert_self (migration 007) reste néanmoins en place
+-- comme filet de sécurité pour les comptes créés avant ce déclencheur — ne
+-- pas la supprimer ici.
