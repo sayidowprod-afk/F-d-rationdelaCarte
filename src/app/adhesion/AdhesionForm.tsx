@@ -15,12 +15,13 @@ export default function AdhesionForm() {
           Votre compte a bien été créé !
         </p>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-          Vous pouvez dès maintenant vous{" "}
+          Vérifiez votre boîte mail et cliquez sur le lien de confirmation
+          pour activer votre compte, puis{" "}
           <a href="/connexion" className="underline">
-            connecter
-          </a>{" "}
-          pour compléter votre profil. Pour activer votre adhésion, réglez
-          votre cotisation auprès du bureau.
+            connectez-vous
+          </a>
+          . Pour activer votre adhésion, réglez votre cotisation auprès du
+          bureau.
         </p>
       </div>
     );

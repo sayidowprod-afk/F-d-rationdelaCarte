@@ -47,9 +47,35 @@ create policy "members_select_active" on public.members
 create policy "members_update_self" on public.members
   for update using (auth.uid() = id);
 
--- Inscription : un utilisateur authentifié peut créer sa propre ligne
-create policy "members_insert_self" on public.members
-  for insert with check (auth.uid() = id);
+-- Création du profil à l'inscription : avec la confirmation d'email activée,
+-- l'utilisateur n'a pas encore de session juste après signUp(), donc le site
+-- ne peut pas insérer sa ligne lui-même (RLS). On délègue cette insertion à
+-- un déclencheur sur auth.users, qui s'exécute dès la création du compte en
+-- lisant les infos passées en métadonnées du signUp.
+create or replace function public.handle_new_member()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into public.members (id, pseudo, first_name, last_name, email, phone, bio)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'pseudo', split_part(new.email, '@', 1)),
+    nullif(new.raw_user_meta_data->>'first_name', ''),
+    nullif(new.raw_user_meta_data->>'last_name', ''),
+    new.email,
+    nullif(new.raw_user_meta_data->>'phone', ''),
+    nullif(new.raw_user_meta_data->>'bio', '')
+  );
+  return new;
+end;
+$$;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_member();
 
 -- Vérifie si l'utilisateur connecté est admin, en contournant RLS (security
 -- definer) pour éviter la récursion infinie que provoquerait une sous-requête

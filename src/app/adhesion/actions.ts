@@ -28,35 +28,31 @@ export async function submitAdhesion(
 
   const supabase = await createClient();
 
+  // Le profil (table members) est créé côté base par un déclencheur sur
+  // auth.users, à partir de ces métadonnées : ça fonctionne même si la
+  // confirmation d'email est activée et qu'aucune session n'existe encore.
   const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      data: {
+        pseudo,
+        first_name: firstName,
+        last_name: lastName,
+        phone,
+        bio,
+      },
+    },
   });
 
   if (signUpError || !signUpData.user) {
+    const message = signUpError?.message || "";
     return {
-      error:
-        signUpError?.message === "User already registered"
-          ? "Un compte existe déjà avec cet email."
-          : signUpError?.message || "Impossible de créer le compte.",
-    };
-  }
-
-  const { error: insertError } = await supabase.from("members").insert({
-    id: signUpData.user.id,
-    pseudo,
-    first_name: firstName || null,
-    last_name: lastName || null,
-    email,
-    phone: phone || null,
-    bio: bio || null,
-  });
-
-  if (insertError) {
-    return {
-      error: insertError.code === "23505"
-        ? "Ce pseudo est déjà pris, merci d'en choisir un autre."
-        : "Compte créé mais erreur lors de l'enregistrement du profil : " + insertError.message,
+      error: message.includes("already registered")
+        ? "Un compte existe déjà avec cet email."
+        : message.includes("duplicate key") || message.includes("members_pseudo_unique")
+          ? "Ce pseudo est déjà pris, merci d'en choisir un autre."
+          : message || "Impossible de créer le compte.",
     };
   }
 
