@@ -1,12 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
-import { memberDisplayName, type Member } from "@/lib/types";
+import { memberDisplayName, todayIso, type Member } from "@/lib/types";
 
 export default async function AnnuairePage() {
   const supabase = await createClient();
   const { data: members } = await supabase
     .from("members")
     .select("*")
-    .eq("status", "active")
+    .gte("membership_expires_at", todayIso())
     .order("pseudo", { ascending: true });
 
   return (

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
-import { memberDisplayName, type Member } from "@/lib/types";
+import { isMembershipActive, memberDisplayName, type Member } from "@/lib/types";
 import PrintButton from "./PrintButton";
 
 export default async function CartePage() {
@@ -18,7 +18,7 @@ export default async function CartePage() {
   const associationName =
     process.env.NEXT_PUBLIC_ASSOCIATION_NAME || "Association de collectionneurs";
 
-  if (!member || member.status !== "active") {
+  if (!member || !isMembershipActive(member)) {
     return (
       <main className="mx-auto w-full max-w-lg flex-1 px-4 py-12">
         <h1 className="mb-4 text-2xl font-semibold tracking-tight">
@@ -52,8 +52,8 @@ export default async function CartePage() {
           Membre n° {member.membership_number}
         </p>
         <p className="mt-4 text-xs text-white/60">
-          Adhérent·e depuis le{" "}
-          {new Date(member.joined_at).toLocaleDateString("fr-FR")}
+          Valide jusqu&apos;au{" "}
+          {new Date(member.membership_expires_at!).toLocaleDateString("fr-FR")}
         </p>
       </div>
 

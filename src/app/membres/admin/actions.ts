@@ -2,13 +2,24 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import type { MembershipStatus } from "@/lib/types";
+import { todayIso } from "@/lib/types";
 
-export async function setMemberStatus(memberId: string, status: MembershipStatus) {
+export async function setMembershipExpiry(memberId: string, expiresAt: string | null) {
   const supabase = await createClient();
-  await supabase.from("members").update({ status }).eq("id", memberId);
+  await supabase
+    .from("members")
+    .update({ membership_expires_at: expiresAt || null })
+    .eq("id", memberId);
   revalidatePath("/membres/admin");
   revalidatePath("/membres/annuaire");
+  revalidatePath("/membres");
+}
+
+export async function renewMembershipOneYear(memberId: string, currentExpiresAt: string | null) {
+  const base = currentExpiresAt && currentExpiresAt > todayIso() ? currentExpiresAt : todayIso();
+  const next = new Date(base);
+  next.setFullYear(next.getFullYear() + 1);
+  await setMembershipExpiry(memberId, next.toISOString().slice(0, 10));
 }
 
 export type NewsState = {

@@ -50,7 +50,6 @@ export async function submitAdhesion(
     email,
     phone: phone || null,
     bio: bio || null,
-    status: "pending",
   });
 
   if (insertError) {

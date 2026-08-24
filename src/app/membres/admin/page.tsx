@@ -1,14 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { memberDisplayName, type Member, type NewsItem } from "@/lib/types";
-import { setMemberStatus, deleteNews } from "./actions";
+import { isMembershipActive, memberDisplayName, type Member, type NewsItem } from "@/lib/types";
+import { setMembershipExpiry, renewMembershipOneYear, deleteNews } from "./actions";
 import NewsForm from "./NewsForm";
-
-const statusLabel: Record<string, string> = {
-  pending: "En attente",
-  active: "Actif",
-  expired: "Expiré",
-};
 
 export default async function AdminPage() {
   const supabase = await createClient();
@@ -53,31 +47,41 @@ export default async function AdminPage() {
                   {memberDisplayName(m)}{" "}
                   <span className="text-xs text-zinc-500">({m.email})</span>
                 </p>
-                <p className="text-xs text-zinc-500">{statusLabel[m.status]}</p>
+                <p className="text-xs text-zinc-500">
+                  {m.membership_expires_at
+                    ? `${isMembershipActive(m) ? "Adhésion valide" : "Adhésion expirée"} jusqu'au ${new Date(m.membership_expires_at).toLocaleDateString("fr-FR")}`
+                    : "Pas encore adhérent·e"}
+                </p>
               </div>
-              <form
-                action={async (fd: FormData) => {
-                  "use server";
-                  await setMemberStatus(
-                    m.id,
-                    fd.get("status") as "pending" | "active" | "expired"
-                  );
-                }}
-                className="flex items-center gap-2"
-              >
-                <select
-                  name="status"
-                  defaultValue={m.status}
-                  className="rounded-md border border-black/10 bg-transparent px-2 py-1 text-xs dark:border-white/15"
+              <div className="flex items-center gap-2">
+                <form
+                  action={async (fd: FormData) => {
+                    "use server";
+                    await setMembershipExpiry(m.id, String(fd.get("expires_at") || ""));
+                  }}
+                  className="flex items-center gap-2"
                 >
-                  <option value="pending">En attente</option>
-                  <option value="active">Actif</option>
-                  <option value="expired">Expiré</option>
-                </select>
-                <button className="rounded-full border border-black/10 px-3 py-1 text-xs hover:bg-black/[.03] dark:border-white/15 dark:hover:bg-white/[.06]">
-                  Mettre à jour
-                </button>
-              </form>
+                  <input
+                    type="date"
+                    name="expires_at"
+                    defaultValue={m.membership_expires_at ?? ""}
+                    className="rounded-md border border-black/10 bg-transparent px-2 py-1 text-xs dark:border-white/15"
+                  />
+                  <button className="rounded-full border border-black/10 px-3 py-1 text-xs hover:bg-black/[.03] dark:border-white/15 dark:hover:bg-white/[.06]">
+                    Enregistrer
+                  </button>
+                </form>
+                <form
+                  action={async () => {
+                    "use server";
+                    await renewMembershipOneYear(m.id, m.membership_expires_at);
+                  }}
+                >
+                  <button className="rounded-full bg-brand-red px-3 py-1 text-xs font-medium text-white hover:opacity-90">
+                    Renouveler +1 an
+                  </button>
+                </form>
+              </div>
             </li>
           ))}
         </ul>

@@ -1,5 +1,3 @@
-export type MembershipStatus = "pending" | "active" | "expired";
-
 export type Member = {
   id: string;
   membership_number: number;
@@ -14,7 +12,7 @@ export type Member = {
   avatar_url: string | null;
   memorabilius_pseudo: string | null;
   memorabilius_url: string | null;
-  status: MembershipStatus;
+  membership_expires_at: string | null;
   is_admin: boolean;
   joined_at: string;
   created_at: string;
@@ -23,6 +21,14 @@ export type Member = {
 export function memberDisplayName(m: Pick<Member, "pseudo" | "first_name" | "last_name">) {
   const fullName = [m.first_name, m.last_name].filter(Boolean).join(" ");
   return fullName ? `${m.pseudo} (${fullName})` : m.pseudo;
+}
+
+export function isMembershipActive(m: Pick<Member, "membership_expires_at">) {
+  return !!m.membership_expires_at && m.membership_expires_at >= todayIso();
+}
+
+export function todayIso() {
+  return new Date().toISOString().slice(0, 10);
 }
 
 export type NewsItem = {

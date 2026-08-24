@@ -1,8 +1,6 @@
 -- Schéma pour le site de l'association
 -- À exécuter dans l'éditeur SQL de votre projet Supabase (nouveau projet dédié, distinct de memorabilius)
 
-create type membership_status as enum ('pending', 'active', 'expired');
-
 create table public.members (
   id uuid primary key references auth.users(id) on delete cascade,
   membership_number serial unique,
@@ -17,7 +15,10 @@ create table public.members (
   avatar_url text,
   memorabilius_pseudo text,
   memorabilius_url text,
-  status membership_status not null default 'pending',
+  -- null tant que la personne n'a pas payé sa première cotisation ; une fois
+  -- réglée, l'admin fixe cette date (ex: +1 an). L'adhésion est active tant
+  -- que membership_expires_at >= aujourd'hui.
+  membership_expires_at date,
   is_admin boolean not null default false,
   joined_at date not null default current_date,
   created_at timestamptz not null default now()
@@ -35,9 +36,12 @@ create table public.news (
 alter table public.members enable row level security;
 alter table public.news enable row level security;
 
--- Tout membre connecté peut voir l'annuaire des membres actifs
+-- Tout membre connecté peut voir l'annuaire des membres à jour de cotisation
 create policy "members_select_active" on public.members
-  for select using (status = 'active' or auth.uid() = id);
+  for select using (
+    (membership_expires_at is not null and membership_expires_at >= current_date)
+    or auth.uid() = id
+  );
 
 -- Un membre peut modifier son propre profil (pas son statut ni is_admin, appliqué côté appli)
 create policy "members_update_self" on public.members

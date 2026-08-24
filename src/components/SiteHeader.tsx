@@ -41,7 +41,7 @@ export default async function SiteHeader() {
           ) : (
             <>
               <Link href="/adhesion" className="text-white/85 hover:text-white">
-                Adhérer
+                Créer un compte
               </Link>
               <Link
                 href="/connexion"

@@ -29,7 +29,7 @@ export default async function Home() {
             href="/adhesion"
             className="rounded-full bg-brand-red px-6 py-2.5 text-sm font-medium text-white hover:opacity-90"
           >
-            Devenir membre
+            Créer un compte
           </Link>
           <Link
             href="/actus"

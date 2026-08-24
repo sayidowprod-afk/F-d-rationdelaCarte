@@ -1,13 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import type { Member } from "@/lib/types";
+import { isMembershipActive, type Member } from "@/lib/types";
 import { signOut } from "./actions";
-
-const statusLabel: Record<string, string> = {
-  pending: "En attente de validation",
-  active: "Actif",
-  expired: "Expiré",
-};
 
 export default async function MembresPage() {
   const supabase = await createClient();
@@ -34,12 +28,31 @@ export default async function MembresPage() {
         </form>
       </div>
 
-      {member?.status !== "active" && (
+      {member && !isMembershipActive(member) && (
         <div className="mb-8 rounded-lg border border-amber-500/30 bg-amber-500/5 p-4 text-sm">
-          Statut de votre adhésion :{" "}
-          <strong>{statusLabel[member?.status || "pending"]}</strong>. Certaines
+          {member.membership_expires_at ? (
+            <>
+              Votre adhésion a expiré le{" "}
+              <strong>
+                {new Date(member.membership_expires_at).toLocaleDateString("fr-FR")}
+              </strong>
+              .
+            </>
+          ) : (
+            <>Vous n&apos;êtes pas encore adhérent·e.</>
+          )}{" "}
+          Contactez le bureau pour régler votre cotisation. Certaines
           fonctionnalités (annuaire, carte de membre) seront disponibles une
-          fois votre adhésion validée par le bureau.
+          fois votre adhésion active.
+        </div>
+      )}
+      {member && isMembershipActive(member) && (
+        <div className="mb-8 rounded-lg border border-green-600/30 bg-green-600/5 p-4 text-sm">
+          Votre adhésion est valide jusqu&apos;au{" "}
+          <strong>
+            {new Date(member.membership_expires_at!).toLocaleDateString("fr-FR")}
+          </strong>
+          .
         </div>
       )}
 

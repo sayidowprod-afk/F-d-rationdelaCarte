@@ -12,15 +12,15 @@ export default function AdhesionForm() {
     return (
       <div className="rounded-lg border border-green-600/30 bg-green-600/5 p-6 text-sm">
         <p className="font-medium text-green-700 dark:text-green-400">
-          Votre demande d&apos;adhésion a bien été envoyée !
+          Votre compte a bien été créé !
         </p>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-          Un membre du bureau va valider votre inscription prochainement.
           Vous pouvez dès maintenant vous{" "}
           <a href="/connexion" className="underline">
             connecter
           </a>{" "}
-          pour compléter votre profil.
+          pour compléter votre profil. Pour activer votre adhésion, réglez
+          votre cotisation auprès du bureau.
         </p>
       </div>
     );
@@ -63,7 +63,7 @@ export default function AdhesionForm() {
         disabled={pending}
         className="w-full rounded-full bg-brand-red px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
       >
-        {pending ? "Envoi en cours..." : "Envoyer ma demande d'adhésion"}
+        {pending ? "Création en cours..." : "Créer mon compte"}
       </button>
     </form>
   );
