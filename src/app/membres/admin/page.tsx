@@ -58,7 +58,9 @@ export default async function AdminPage() {
                   }
                 >
                   {m.membership_expires_at
-                    ? `${isMembershipActive(m) ? "Valide" : "Expirée"} jusqu'au ${new Date(m.membership_expires_at).toLocaleDateString("fr-FR")}`
+                    ? isMembershipActive(m)
+                      ? `Valide jusqu'au ${new Date(m.membership_expires_at).toLocaleDateString("fr-FR")}`
+                      : `Expirée depuis le ${new Date(m.membership_expires_at).toLocaleDateString("fr-FR")}`
                     : "Pas encore adhérent·e"}
                 </span>
               </div>
